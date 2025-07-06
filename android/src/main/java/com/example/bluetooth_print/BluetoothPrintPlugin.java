@@ -49,7 +49,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
  */
 //public class BluetoothPrintPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler, RequestPermissionsResultListener {
 public class BluetoothPrintPlugin implements FlutterPlugin, MethodCallHandler {
-  private MethodChannel channel;  
+  //private MethodChannel channel;  
   private static final String TAG = "BluetoothPrintPlugin";
   private Object initializationLock = new Object();
   private Context context;
@@ -98,19 +98,24 @@ public class BluetoothPrintPlugin implements FlutterPlugin, MethodCallHandler {
       channel = new MethodChannel(binding.getBinaryMessenger(), "bluetooth_print");
       channel.setMethodCallHandler(this);
   }
-  @Override
-  //public void onAttachedToEngine(FlutterPluginBinding binding) {
-  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
+ 
+  /*public void onAttachedToEngine(FlutterPluginBinding binding) {
+  
     pluginBinding = binding;
     if (call.method.equals("getPlatformVersion")) {
             result.success("Android " + android.os.Build.VERSION.RELEASE);
     } else {
             result.notImplemented();
    }
+  }*/
+  
+  @Override
+  public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
+        channel = new MethodChannel(binding.getBinaryMessenger(), "bluetooth_print");
+        channel.setMethodCallHandler(this);
   }
 
   @Override
-  //public void onDetachedFromEngine(FlutterPluginBinding binding) {
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     pluginBinding = null;
     channel.setMethodCallHandler(null);
@@ -159,13 +164,13 @@ public class BluetoothPrintPlugin implements FlutterPlugin, MethodCallHandler {
       stateChannel.setStreamHandler(stateHandler);
       mBluetoothManager = (BluetoothManager) application.getSystemService(Context.BLUETOOTH_SERVICE);
       mBluetoothAdapter = mBluetoothManager.getAdapter();
-      if (registrar != null) {
+      /*if (registrar != null) {
         // V1 embedding setup for activity listeners.
         registrar.addRequestPermissionsResultListener(this);
       } else {
         // V2 embedding setup for activity listeners.
         activityBinding.addRequestPermissionsResultListener(this);
-      }
+      } */
     }
   }
 
@@ -241,7 +246,11 @@ public class BluetoothPrintPlugin implements FlutterPlugin, MethodCallHandler {
         result.notImplemented();
         break;
     }
-
+    if (call.method.equals("getPlatformVersion")) {
+            result.success("Android " + android.os.Build.VERSION.RELEASE);
+        } else {
+            result.notImplemented();
+        }
   }
 
   private void getDevices(Result result){
