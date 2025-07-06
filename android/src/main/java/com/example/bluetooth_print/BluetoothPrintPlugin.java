@@ -36,11 +36,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
+import io.flutter.plugin.common.MethodChannel.Result;
+
 /**
  * BluetoothPrintPlugin
  * @author thon
  */
-public class BluetoothPrintPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler, RequestPermissionsResultListener {
+//public class BluetoothPrintPlugin implements FlutterPlugin, ActivityAware, MethodCallHandler, RequestPermissionsResultListener {
+public class BluetoothPrintPlugin implements FlutterPlugin, MethodCallHandler {
+  private MethodChannel channel;  
   private static final String TAG = "BluetoothPrintPlugin";
   private Object initializationLock = new Object();
   private Context context;
@@ -70,7 +79,7 @@ public class BluetoothPrintPlugin implements FlutterPlugin, ActivityAware, Metho
           Manifest.permission.ACCESS_FINE_LOCATION
   };
 
-  public static void registerWith(Registrar registrar) {
+ /* public static void registerWith(Registrar registrar) {
     final BluetoothPrintPlugin instance = new BluetoothPrintPlugin();
 
     Activity activity = registrar.activity();
@@ -83,16 +92,28 @@ public class BluetoothPrintPlugin implements FlutterPlugin, ActivityAware, Metho
 
   public BluetoothPrintPlugin(){
   }
-
-
+*/
   @Override
-  public void onAttachedToEngine(FlutterPluginBinding binding) {
+  public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
+      channel = new MethodChannel(binding.getBinaryMessenger(), "bluetooth_print");
+      channel.setMethodCallHandler(this);
+  }
+  @Override
+  //public void onAttachedToEngine(FlutterPluginBinding binding) {
+  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     pluginBinding = binding;
+    if (call.method.equals("getPlatformVersion")) {
+            result.success("Android " + android.os.Build.VERSION.RELEASE);
+    } else {
+            result.notImplemented();
+   }
   }
 
   @Override
-  public void onDetachedFromEngine(FlutterPluginBinding binding) {
+  //public void onDetachedFromEngine(FlutterPluginBinding binding) {
+  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     pluginBinding = null;
+    channel.setMethodCallHandler(null);
   }
 
   @Override
