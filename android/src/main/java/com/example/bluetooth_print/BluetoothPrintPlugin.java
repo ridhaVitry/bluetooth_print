@@ -146,7 +146,7 @@ public class BluetoothPrintPlugin implements FlutterPlugin, MethodCallHandler {
           final BinaryMessenger messenger,
           final Application application,
           final Activity activity,
-          final PluginRegistry.Registrar registrar,
+          //final PluginRegistry.Registrar registrar,
           final ActivityPluginBinding activityBinding) {
     synchronized (initializationLock) {
       Log.i(TAG, "setup");
